@@ -55,7 +55,7 @@ export function Topbar() {
             <DropdownMenuItem render={<Link href="/integrations">Integrations</Link>} />
             <DropdownMenuItem render={<Link href="/reports">Reports</Link>} />
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Sign out</DropdownMenuItem>
+            <DropdownMenuItem render={<Link href="/login">Sign out</Link>} />
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
