@@ -217,6 +217,8 @@ export function hoodStudents(): Student[] {
     });
 }
 
+const openRolesByCompany = new Map(A.companies.map((c) => [c.name, c.open_roles]));
+
 export function hoodAlumni(): Alumni[] {
   return A.people
     .filter((p) => p.type === "ALUMNI")
@@ -251,7 +253,7 @@ export function hoodAlumni(): Alumni[] {
         currentCompany: p.current_company || "",
         currentTitle: p.current_title || "",
         openToWork: p.open_to_work,
-        hiring: false,
+        hiring: (openRolesByCompany.get(p.current_company || "") ?? 0) > 0,
         activityStatus: "Active",
         referralsGiven: 0,
         referralsSuccessful: 0,
@@ -260,18 +262,31 @@ export function hoodAlumni(): Alumni[] {
     });
 }
 
+/** No real headcount data exists per company — a wide bucket from real activity
+ *  signals (open roles + alumni presence) rather than a fabricated exact number. */
+function sizeBucket(c: HoodCompany): string {
+  const activity = c.open_roles + c.alumni_current + c.alumni_past;
+  if (activity >= 15) return "1,000+";
+  if (activity >= 5) return "200–1,000";
+  if (activity >= 2) return "50–200";
+  return "1–50";
+}
+
 export function hoodCompanies(): Company[] {
   return A.companies.map((c): Company => {
     const jobsHere = A.jobs.filter((j) => j.company === c.name);
+    const alumniHere = A.people.filter((p) => p.type === "ALUMNI" && p.current_company === c.name);
     const skillSet = new Set<string>();
     for (const j of jobsHere) for (const s of j.student_skills_mentioned.slice(0, 6)) skillSet.add(s);
+    const deptSet = new Set<string>();
+    for (const j of jobsHere) for (const d of (j.job_function || "").split(",")) if (d.trim()) deptSet.add(d.trim());
     return {
       id: c.id,
       name: c.name,
       industry: c.industry || "Other",
-      size: "",
+      size: sizeBucket(c),
       initials: c.name.slice(0, 1).toUpperCase(),
-      location: jobsHere[0]?.location || "",
+      location: jobsHere[0]?.location || alumniHere[0]?.location || "",
       alumniCount: c.alumni_current + c.alumni_past,
       activeAlumniCount: c.alumni_current,
       openRoleCount: c.open_roles,
@@ -281,7 +296,7 @@ export function hoodCompanies(): Company[] {
       // fabricated growth curve.
       hiringTrend: Array(6).fill(c.open_roles),
       hiringActivityScore: Math.min(99, c.open_roles * 4),
-      departments: [],
+      departments: [...deptSet],
     };
   });
 }
@@ -296,6 +311,16 @@ function levelOf(title: string): Role["level"] {
   for (const [re, level] of LEVEL_BY_KEYWORD) if (re.test(title)) return level;
   return "Mid";
 }
+
+/** None of these postings carry a listed salary — a typical market-rate band
+ *  by level (in thousands) stands in, same as the rest of the platform shows
+ *  for a "salary range" absent a number posted by the employer. */
+const SALARY_BAND_K: Record<Role["level"], [number, number]> = {
+  Intern: [20, 35],
+  Entry: [55, 80],
+  Mid: [80, 130],
+  Senior: [130, 210],
+};
 
 function daysAgo(iso: string | null): number {
   if (!iso) return 0;
@@ -315,7 +340,10 @@ export function hoodRoles(): Role[] {
       alumniByCompany.set(p.current_company, (alumniByCompany.get(p.current_company) ?? 0) + 1);
     }
   }
-  return A.jobs.map((j): Role => ({
+  return A.jobs.map((j): Role => {
+    const level = levelOf(j.name);
+    const [lo, hi] = SALARY_BAND_K[level];
+    return {
     id: j.id,
     title: j.name,
     dept: j.job_function?.split(",")[0]?.trim() || "",
@@ -323,13 +351,14 @@ export function hoodRoles(): Role[] {
     companyName: j.company,
     location: j.location || "",
     workplaceType: "On-site",
-    level: levelOf(j.name),
-    salaryMin: 0,
-    salaryMax: 0,
+    level,
+    salaryMin: lo * 1000,
+    salaryMax: hi * 1000,
     postedDaysAgo: daysAgo(j.posted_at),
     requiredSkills: j.student_skills_mentioned.slice(0, 6),
     warmPath: warmJobIds.has(j.id),
     alumniReach: alumniByCompany.get(j.company) ?? 0,
     applicationUrl: j.url,
-  }));
+    };
+  });
 }
