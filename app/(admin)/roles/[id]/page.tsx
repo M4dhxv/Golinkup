@@ -111,7 +111,7 @@ export default async function RoleDetailPage({ params }: { params: Promise<{ id:
                 </div>
               </Link>
               <p className="mt-3 text-sm text-muted-foreground">
-                {company.alumniCount} Columbia alumni work here, {company.activeAlumniCount} of whom are active on GoLinkUp.
+                {company.alumniCount} Hood College alumni work here, {company.activeAlumniCount} of whom are active on GoLinkUp.
               </p>
             </Section>
           )}

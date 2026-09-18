@@ -25,7 +25,7 @@ export function LoginCard() {
       <div className="mb-8">
         <span className="text-2xl font-extrabold tracking-tight text-primary">golinkup</span>
         <h1 className="mt-6 text-2xl font-bold tracking-tight text-foreground">Welcome back</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Sign in to your Columbia University admin workspace.</p>
+        <p className="mt-1 text-sm text-muted-foreground">Sign in to your Hood College admin workspace.</p>
       </div>
 
       <div className="flex flex-col gap-2.5">

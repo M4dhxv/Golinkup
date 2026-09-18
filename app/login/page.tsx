@@ -21,7 +21,7 @@ export default function LoginPage() {
           </h1>
           <p className="mt-4 text-primary-foreground/80">
             GoLinkUp Admin surfaces hidden jobs, unlocks warm introductions, and turns career services into a
-            proactive, AI-powered operation for Columbia University.
+            proactive, AI-powered operation for Hood College.
           </p>
         </div>
 

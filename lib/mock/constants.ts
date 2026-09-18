@@ -1,5 +1,5 @@
 export const INSTITUTION = {
-  name: "Columbia University",
+  name: "Hood College",
   alumniBaseSize: 18400,
   tier: "Tier 1",
   subscriptionPrice: "$4,200/mo",

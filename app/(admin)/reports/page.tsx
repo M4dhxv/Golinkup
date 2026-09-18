@@ -2,7 +2,12 @@ import { FileText, Download, Plus, Clock } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 
+// The three at the top are real exports of the live Hood College network data
+// (see lib/mock/hoodSource.ts) — the rest below them are still placeholders.
 const savedReports = [
+  { name: "Hood College Network — People", type: "Students & Alumni", lastRun: "Live", format: "CSV", href: "/data/hood_people.csv" },
+  { name: "Hood College Network — Connections", type: "Connection Strength", lastRun: "Live", format: "CSV", href: "/data/hood_connections.csv" },
+  { name: "Hood College Network — Job Matches", type: "Career Intelligence", lastRun: "Live", format: "CSV", href: "/data/hood_job_matches.csv" },
   { name: "Monthly Alumni Engagement", type: "Alumni Engagement", lastRun: "Jul 1, 2026", format: "PDF" },
   { name: "Quarterly Placement Report", type: "Career Intelligence", lastRun: "Jun 30, 2026", format: "XLSX" },
   { name: "Skill Gap Summary", type: "Skill Intelligence", lastRun: "Jun 28, 2026", format: "PDF" },
@@ -45,9 +50,19 @@ export default function ReportsPage() {
                   <Clock className="size-3" /> {r.lastRun}
                 </span>
                 <Badge variant="secondary">{r.format}</Badge>
-                <button className="flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium hover:bg-accent">
-                  <Download className="size-3.5" /> Download
-                </button>
+                {"href" in r ? (
+                  <a
+                    href={r.href}
+                    download
+                    className="flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium hover:bg-accent"
+                  >
+                    <Download className="size-3.5" /> Download
+                  </a>
+                ) : (
+                  <button className="flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium hover:bg-accent">
+                    <Download className="size-3.5" /> Download
+                  </button>
+                )}
               </div>
             </div>
           ))}

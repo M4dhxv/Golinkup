@@ -17,7 +17,7 @@ export default function DashboardPage() {
     <div>
       <PageHeader
         title="Good morning, Sarah! 👋"
-        subtitle="Your network is growing. Here's what's happening at Columbia University."
+        subtitle="Your network is growing. Here's what's happening at Hood College."
         actions={
           <button className="flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-brand-forest-light">
             <UserPlus className="size-4" /> Add Alumni

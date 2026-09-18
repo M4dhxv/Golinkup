@@ -1,15 +1,16 @@
-import { generateStudents, generateAlumni, generateCompanies, generateRoles } from "./generators";
+import { hoodStudents, hoodAlumni, hoodCompanies, hoodRoles } from "./hoodSource";
 import { generateInsights } from "./insights";
 import { Rng } from "./seed";
 import { INDUSTRIES, MONTHS, SKILLS, EMERGING_SKILLS, DECLINING_SKILLS, INSTITUTION } from "./constants";
 import type { TimeSeriesPoint } from "./types";
 
 // Module-level singleton: computed once per server process / client bundle load,
-// so every screen reads the same consistent mock dataset.
-export const students = generateStudents(1001, 620);
-export const alumni = generateAlumni(2002, 1240);
-export const companies = generateCompanies(3003);
-export const roles = generateRoles(4004, companies, 300);
+// so every screen reads the same consistent dataset. Real Hood College network
+// data (see lib/mock/hoodSource.ts) in place of the generated mock population.
+export const students = hoodStudents();
+export const alumni = hoodAlumni();
+export const companies = hoodCompanies();
+export const roles = hoodRoles();
 
 // Cross-link recommendations so profile pages feel coherent rather than random.
 const rngLink = new Rng(5005);
@@ -30,10 +31,10 @@ export const institution = INSTITUTION;
 
 // ---- Aggregate KPIs ----
 export const kpis = {
-  totalAlumni: alumni.length + 1210, // scaled to feel like a real deployment
-  activatedAlumni: alumni.filter((a) => a.activityStatus === "Active").length + 690,
-  pendingAlumni: alumni.filter((a) => a.activityStatus === "Dormant").length + 320,
-  totalStudents: students.length + 5380,
+  totalAlumni: alumni.length,
+  activatedAlumni: alumni.filter((a) => a.activityStatus === "Active").length,
+  pendingAlumni: alumni.filter((a) => a.activityStatus === "Dormant").length,
+  totalStudents: students.length,
   totalCompanies: companies.length,
   openRoles: roles.length,
   networks: companies.length,

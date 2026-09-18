@@ -78,7 +78,7 @@ export function generateInsights(
       category: "Referral",
       priority: "high",
       title: `${companyName} alumni can refer ${Math.min(matchable, list.length * 12)} students today`,
-      detail: `${list.length} actively hiring alumni at ${companyName} have referral capacity for well-matched Columbia students.`,
+      detail: `${list.length} actively hiring alumni at ${companyName} have referral capacity for well-matched students.`,
       actionLabel: "Open referral intelligence",
       actionHref: "/analytics/referral-intelligence",
       createdAgo: "3h ago",
